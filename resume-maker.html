@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simple Resume Maker - Free PDF</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef1f5;color:#151515;font-family:Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid #ddd;padding:15px 22px}
+header h1{margin:0;font-size:21px;color:#1857b7}header p{margin:4px 0 0;color:#666;font-size:13px}
+.app{max-width:1450px;margin:20px auto;padding:0 18px;display:grid;grid-template-columns:510px 1fr;gap:22px;position:relative}
+.editor{background:#fff;border:1px solid #d8d8d8;border-radius:8px;padding:18px;max-height:calc(100vh - 100px);overflow:auto}
+.editor-title{background:#1857b7;color:#fff;padding:10px 12px;border-radius:6px;font-weight:700;margin-bottom:15px}
+.section{border-top:1px solid #eee;margin-top:18px;padding-top:17px}.section:first-of-type{border-top:0;margin-top:0;padding-top:0}
+h2{font-size:15px;color:#1857b7;margin:0 0 11px}label{display:block;font-size:12px;font-weight:700;margin:8px 0 5px}
+input,textarea{width:100%;padding:9px;border:1px solid #cbd0d6;border-radius:5px;font:inherit;font-size:13px}textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.data{width:100%;border-collapse:collapse;font-size:12px}.data th,.data td{border:1px solid #ddd;padding:5px}.data th{background:#f3f4f6;text-align:left}.data input{border:0;padding:6px;background:transparent}
+.add{margin-top:8px;padding:7px 10px;border:1px solid #8db0e5;background:#fff;color:#1857b7;border-radius:5px;font-weight:700;cursor:pointer}.del{border:0;background:none;color:#d22;font-size:17px;cursor:pointer}
+.actions{margin-top:18px}.download{width:100%;padding:12px;border:0;border-radius:6px;background:#159447;color:#fff;font-weight:700;cursor:pointer}
+.preview-area{display:flex;justify-content:center;align-items:flex-start;overflow:auto}.resume{width:210mm;height:297mm;min-width:210mm;min-height:297mm;max-width:210mm;max-height:297mm;background:#fff;border:1.5px solid #222;padding:2.5mm;box-shadow:0 2px 15px #0002;flex:none;box-sizing:border-box;overflow:hidden}
+.inner{width:100%;height:100%;border:1px solid #333;padding:9mm 8.5mm 10mm;overflow:hidden;box-sizing:border-box}
+.title{text-align:center;font-size:25px;font-weight:700;border-bottom:2px solid #222;padding-bottom:6px;margin:0 0 24px}
+.top{width:100%;font-size:15px;line-height:1.45;margin-bottom:13px}.top-row{display:flex;align-items:baseline;margin-bottom:4px;white-space:nowrap}.label{font-weight:700;width:82px;flex:0 0 82px}.tab{width:55px;flex:0 0 55px}.value{white-space:nowrap;overflow:hidden;text-overflow:clip}.name-value{font-weight:700}.address-value{white-space:nowrap}
+
+.contact-main-row{position:relative;width:100%}
+.contact-right{margin-left:auto;display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+.contact-label-right{font-weight:700}
+
+.bar{background:#e4e6e8;border-radius:5px;padding:5px 10px;font-size:15px;font-weight:700;margin:10px 0 7px}
+.objective{font-size:14px;font-style:italic;line-height:1.45;margin:3px 2px}
+.resume table{width:100%;border-collapse:collapse;font-size:13px}.resume th,.resume td{border:1px solid #333;padding:6px 7px;text-align:left}.resume th{font-weight:700}
+.personal{width:100%;font-size:14px;line-height:1.65;padding-left:10px}
+.personal-row{display:grid;grid-template-columns:115px 18px minmax(0,1fr);width:100%;align-items:baseline;margin:4px 0}
+.personal-label{
+  font-weight:700;
+  text-align:left;
+  white-space:nowrap;
+}
+.personal-dash{
+  text-align:center;
+}
+.personal-row>span:last-child{
+  text-align:left;
+  min-width:0;
+}
+.declaration{font-size:14px;line-height:1.45;margin:7px 0 0;padding-left:10px;padding-bottom:18px}.footer{display:grid;grid-template-columns:1fr 1fr;margin-top:10px;font-size:14px;align-items:end}
+.place-date>div{display:grid;grid-template-columns:55px 18px minmax(0,1fr);align-items:baseline;margin:0 0 8px}
+.footer-label{font-weight:700}
+.footer-colon{text-align:center}
+
+.place-date{font-size:14px;padding-left:10px}
+.place-date>div{display:grid;grid-template-columns:55px 18px minmax(0,1fr);align-items:baseline;margin:0 0 8px}
+.place-date-label{font-weight:700}
+.place-date-colon{text-align:center}
+
+.signature{text-align:right;font-weight:700;text-decoration:underline;padding-top:0;align-self:end;margin:0 0 8px}
+.hide{display:none}
+@media(max-width:1050px){.app{grid-template-columns:1fr}.editor{max-height:none}.preview-area{overflow:auto}}
+
+.mobile-tabs{display:none;grid-column:1/-1}
+.reset-btn{width:100%;margin-top:8px;padding:10px;border:1px solid #cbd0d6;border-radius:6px;background:#fff;color:#333;font-weight:700;cursor:pointer}
+.form-message{margin-top:8px;font-size:12px;line-height:1.4}
+.form-message.error{color:#b42318}
+.form-message.ok{color:#16803c}
+.page-status{display:none;position:fixed;right:18px;top:76px;z-index:5;padding:8px 11px;border-radius:6px;font-size:12px;font-weight:700}
+.page-status.warn{display:block;background:#fff0f0;color:#b42318;border:1px solid #f0b8b8}
+.page-status.ok{display:block;background:#effaf3;color:#16803c;border:1px solid #b9e1c5}
+@media(max-width:1050px){
+  .mobile-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:-4px 0 14px}
+  .mobile-tab{padding:9px;border:1px solid #cbd0d6;border-radius:5px;background:#fff;font-weight:700;cursor:pointer}
+  .mobile-tab.active{background:#1857b7;color:#fff;border-color:#1857b7}
+  .app.mobile-preview .editor{display:none}
+  .app.mobile-preview .preview-area{display:flex}
+  .app.mobile-edit .preview-area{display:none}
+  .page-status{position:sticky;top:0;right:auto;margin:0 auto 8px;max-width:210mm}
+}
+
+@page{size:210mm 297mm;margin:0}
+@media print{
+  html,body{
+    width:210mm!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+    background:#fff!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+  header,.editor,.mobile-tabs,.page-status{
+    display:none!important;
+  }
+  .app{
+    display:block!important;
+    width:210mm!important;
+    height:296mm!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  .preview-area{
+    display:block!important;
+    width:210mm!important;
+    height:297mm!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  .resume{
+    display:block!important;
+    position:relative!important;
+    width:210mm!important;
+    height:296mm!important;
+    min-width:210mm!important;
+    min-height:296mm!important;
+    max-width:210mm!important;
+    max-height:296mm!important;
+    margin:0!important;
+    padding:2.5mm!important;
+    border:1.5px solid #222!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    box-shadow:none!important;
+    page-break-after:avoid!important;
+    break-after:avoid-page!important;
+  }
+  .inner{
+    width:100%!important;
+    height:100%!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+} </style>
+</head>
+<body>
+<header><h1>SIMPLE RESUME MAKER</h1><p>Fill your details, preview your resume, and <b>Download Free</b> as an A4 PDF.</p></header>
+
+<div class="app">
+<div class="mobile-tabs">
+  <button type="button" class="mobile-tab active" onclick="showMobile('edit')">Edit</button>
+  <button type="button" class="mobile-tab" onclick="showMobile('preview')">Preview</button>
+</div>
+<section class="editor">
+<div class="editor-title">EDIT RESUME DETAILS</div>
+
+
+<div class="section">
+<h2>Personal Information</h2>
+<label>Full Name *</label><input id="name">
+<div class="row"><div><label>Email</label><input id="email"></div><div><label>Contact No. *</label><input id="mobile"></div></div>
+<label>Address</label><input id="address">
+</div>
+
+<div class="section"><h2>Objective</h2><div style="font-size:13px;color:#555;background:#f5f5f5;padding:10px;border-radius:5px">Fixed objective — user cannot edit this section.</div></div>
+
+<div class="section">
+<h2>Educational Qualifications *</h2>
+<table class="data"><thead><tr><th>Course Name</th><th>University / Board Name</th><th>Passing Year</th><th>Percentage</th><th></th></tr></thead><tbody id="eduForm"></tbody></table>
+<button class="add" onclick="addEdu()">+ Add Education</button>
+</div>
+
+<div class="section">
+<h2>Technical Skills</h2>
+<table class="data"><thead><tr><th>Course Name</th><th>Passing Year</th><th>Percentage</th><th></th></tr></thead><tbody id="skillForm"></tbody></table>
+<button class="add" onclick="addSkill()">+ Add Skill</button>
+</div>
+
+<div class="section">
+<h2>Work Experience</h2>
+<table class="data"><thead><tr><th>Company Name</th><th>Job Title</th><th>Experience (In Years)</th><th></th></tr></thead><tbody id="expForm"></tbody></table>
+<button class="add" onclick="addExp()">+ Add Experience</button>
+</div>
+
+<div class="section">
+<h2>Personal Details</h2>
+<div class="row"><div><label>Date of Birth</label><input id="dob"></div><div><label>Gender</label><input id="gender"></div></div>
+<div class="row"><div><label>Religion</label><input id="religion"></div><div><label>Nationality</label><input id="nationality"></div></div>
+<label>Languages</label><input id="languages">
+</div>
+
+<div class="section"><h2>Declaration</h2><div style="font-size:13px;color:#555;background:#f5f5f5;padding:10px;border-radius:5px">Fixed declaration — user cannot edit this section.</div></div>
+
+<div class="section"><h2>Place / Date / Signature</h2>
+<div class="row"><div><label>Place</label><input id="place"></div><div><label>Date</label><input id="date"></div></div>
+<label>Signature Name</label><input id="signature">
+</div>
+
+<div class="actions">
+  <button class="download" onclick="downloadPDF()">↓ Download A4 PDF</button>
+  <button class="reset-btn" type="button" onclick="resetResume()">↺ Reset Form</button>
+  <div id="formMessage" class="form-message"></div>
+</div>
+</section>
+
+<section class="preview-area">
+<div id="pageStatus" class="page-status"></div><div class="resume"><div class="inner">
+<h1 class="title">RESUME</h1>
+
+<div class="top">
+<div class="top-row"><span class="label">Name:</span><span class="value name-value" id="rName"></span></div>
+<div class="top-row contact-main-row">
+  <span class="label">Email:</span><span class="value" id="rEmail"></span>
+  <span class="contact-right"><span class="contact-label-right">Contact No.:</span><span class="value" id="rMobile"></span></span>
+</div>
+<div class="top-row"><span class="label">Address:</span><span class="value address-value" id="rAddress"></span></div>
+</div>
+
+<div id="objBlock"><div class="bar">Objective:</div><p class="objective" id="rObjective"></p></div>
+<div id="eduBlock"><div class="bar">Educational Qualifications:</div><table><thead><tr><th>Course Name</th><th>University / Board Name</th><th>Passing Year</th><th>Percentage</th></tr></thead><tbody id="rEdu"></tbody></table></div>
+<div id="skillBlock"><div class="bar">Technical Skills:</div><table><thead><tr><th>Course Name</th><th>Passing Year</th><th>Percentage</th></tr></thead><tbody id="rSkill"></tbody></table></div>
+<div id="expBlock"><div class="bar">Work Experience:</div><table><thead><tr><th>Company Name</th><th>Job Title</th><th>Experience (In Years)</th></tr></thead><tbody id="rExp"></tbody></table></div>
+<div id="personalBlock">
+  <div class="bar">Personal Details:</div>
+  <div class="personal">
+    <div class="personal-row"><span class="personal-label">Date of Birth</span><span class="personal-dash">-</span><span id="rDob"></span></div>
+    <div class="personal-row"><span class="personal-label">Gender</span><span class="personal-dash">-</span><span id="rGender"></span></div>
+    <div class="personal-row"><span class="personal-label">Religion</span><span class="personal-dash">-</span><span id="rReligion"></span></div>
+    <div class="personal-row"><span class="personal-label">Nationality</span><span class="personal-dash">-</span><span id="rNationality"></span></div>
+    <div class="personal-row"><span class="personal-label">Languages</span><span class="personal-dash">-</span><span id="rLanguages"></span></div>
+  </div>
+</div>
+<div id="declBlock"><div class="bar">Declaration:</div><p class="declaration" id="rDeclaration"></p></div>
+<div class="footer">
+  <div class="place-date">
+    <div><span class="footer-label">Place</span><span class="footer-colon">:</span><span id="rPlace"></span></div>
+    <div><span class="footer-label">Date</span><span class="footer-colon">:</span><span id="rDate"></span></div>
+  </div>
+  <div class="signature" id="rSignature"></div>
+</div>
+
+</div></div>
+</section>
+</div>
+
+<script>
+const ids=["name","email","mobile","address","dob","gender","religion","nationality","languages","place","date","signature"];
+ids.forEach(id=>document.getElementById(id).addEventListener("input",update));
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function inp(cls,ph){return '<input class="'+cls+'" placeholder="'+ph+'">'}
+function bind(tr){tr.querySelectorAll("input").forEach(x=>x.addEventListener("input",update));tr.querySelector(".del").onclick=()=>{tr.remove();update()}}
+function addEdu(c="",u="",y="",p=""){let tr=document.createElement("tr");tr.innerHTML='<td>'+inp("ec","B.Sc")+'</td><td>'+inp("eu","University / Board")+'</td><td>'+inp("ey","2026")+'</td><td>'+inp("ep","85.22")+'</td><td><button class="del">×</button></td>';document.getElementById("eduForm").appendChild(tr);tr.querySelector(".ec").value=c;tr.querySelector(".eu").value=u;tr.querySelector(".ey").value=y;tr.querySelector(".ep").value=p;bind(tr);update()}
+function addSkill(c="",y="",p=""){let tr=document.createElement("tr");tr.innerHTML='<td>'+inp("sc","MS-CIT")+'</td><td>'+inp("sy","-")+'</td><td>'+inp("sp","-")+'</td><td><button class="del">×</button></td>';document.getElementById("skillForm").appendChild(tr);tr.querySelector(".sc").value=c;tr.querySelector(".sy").value=y;tr.querySelector(".sp").value=p;bind(tr);update()}
+function addExp(c="",t="",e=""){let tr=document.createElement("tr");tr.innerHTML='<td>'+inp("xc","Company")+'</td><td>'+inp("xt","Job Title")+'</td><td>'+inp("xe","2")+'</td><td><button class="del">×</button></td>';document.getElementById("expForm").appendChild(tr);tr.querySelector(".xc").value=c;tr.querySelector(".xt").value=t;tr.querySelector(".xe").value=e;bind(tr);update()}
+function v(id){return document.getElementById(id).value.trim()}
+function fill(form,out,classes){document.getElementById(out).innerHTML=[...document.querySelectorAll("#"+form+" tr")].map(tr=>"<tr>"+classes.map(c=>"<td>"+esc(tr.querySelector("."+c).value)+"</td>").join("")+"</tr>").join("")}
+function update(){
+rName.textContent=v("name");rEmail.textContent=v("email");rMobile.textContent=v("mobile");rAddress.textContent=v("address");
+rObjective.textContent="I want to excel in this field with hard work, perseverance and dedication.";objBlock.classList.remove("hide");
+fill("eduForm","rEdu",["ec","eu","ey","ep"]);eduBlock.classList.toggle("hide",!document.querySelectorAll("#eduForm tr").length);
+fill("skillForm","rSkill",["sc","sy","sp"]);skillBlock.classList.toggle("hide",!document.querySelectorAll("#skillForm tr").length);
+fill("expForm","rExp",["xc","xt","xe"]);expBlock.classList.toggle("hide",!document.querySelectorAll("#expForm tr").length);
+["dob","gender","religion","nationality","languages"].forEach(id=>document.getElementById("r"+id[0].toUpperCase()+id.slice(1)).textContent=v(id));
+personalBlock.classList.toggle("hide",!["dob","gender","religion","nationality","languages"].some(v));
+rDeclaration.textContent="I hereby declare that all above given information is true and correct to the best of my knowledge and belief.";declBlock.classList.remove("hide");rPlace.textContent=v("place");rDate.textContent=v("date");rSignature.textContent=v("signature");
+checkPageFit();
+}
+
+update();
+
+function showMobile(mode){
+  const app=document.querySelector(".app");
+  app.classList.toggle("mobile-preview",mode==="preview");
+  app.classList.toggle("mobile-edit",mode==="edit");
+  document.querySelectorAll(".mobile-tab").forEach((b,i)=>b.classList.toggle("active",(mode==="edit"&&i===0)||(mode==="preview"&&i===1)));
+  if(mode==="preview") checkPageFit();
+}
+function validateForm(){
+  const missing=[];
+  if(!v("name")) missing.push("Full Name");
+  if(!v("mobile")) missing.push("Contact No.");
+  const firstEdu=document.querySelector("#eduForm tr");
+  if(!firstEdu || !firstEdu.querySelector(".ec").value.trim()) missing.push("Education");
+  if(missing.length){
+    formMessage.className="form-message error";
+    formMessage.textContent="Please fill: "+missing.join(", ");
+    return false;
+  }
+  formMessage.className="form-message ok";
+  formMessage.textContent="Ready to download.";
+  return true;
+}
+function checkPageFit(){
+  const inner=document.querySelector(".inner");
+  if(!inner) return;
+  const status=document.getElementById("pageStatus");
+  requestAnimationFrame(()=>{
+    const overflow=inner.scrollHeight>inner.clientHeight+2;
+    status.className="page-status "+(overflow?"warn":"ok");
+    status.textContent=overflow?"⚠ Resume content is more than one A4 page.":"✓ Fits on one A4 page";
+  });
+}
+function downloadPDF(){
+  if(!validateForm()) return;
+  checkPageFit();
+  if(document.querySelector(".page-status.warn")) return;
+  const oldTitle=document.title;
+  const clean=(v("name")||"Resume").replace(/[\\/:*?"<>|]+/g,"").trim().replace(/\s+/g,"_");
+  document.title=clean+"_Resume";
+  window.print();
+  setTimeout(()=>{document.title=oldTitle;},1500);
+}
+function resetResume(){
+  if(!confirm("Reset all entered resume details?")) return;
+  ids.forEach(id=>{const el=document.getElementById(id);if(el) el.value="";});
+  document.getElementById("eduForm").innerHTML="";
+  document.getElementById("skillForm").innerHTML="";
+  document.getElementById("expForm").innerHTML="";
+  addEdu(); addSkill(); addExp();
+  formMessage.className="form-message";
+  formMessage.textContent="";
+  update();
+  checkPageFit();
+}
+
+</script>
+</body>
+</html>
