@@ -130,7 +130,26 @@ input,textarea{width:100%;padding:9px;border:1px solid #cbd0d6;border-radius:5px
     box-sizing:border-box!important;
     overflow:hidden!important;
   }
-} </style>
+} 
+@media(max-width:1050px){
+  .preview-area{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:flex-start!important;
+    padding:0 8px!important;
+  }
+  .preview-area .resume{
+    flex:0 0 auto!important;
+    transform-origin:top center!important;
+    margin:0 auto!important;
+  }
+  .app.mobile-edit .preview-area{display:none!important}
+  .app.mobile-preview .editor{display:none!important}
+}
+</style>
 </head>
 <body>
 <header><h1>SIMPLE RESUME MAKER</h1><p>Fill your details, preview your resume, and <b>Download Free</b> as an A4 PDF.</p></header>
@@ -262,7 +281,7 @@ function showMobile(mode){
   app.classList.toggle("mobile-preview",mode==="preview");
   app.classList.toggle("mobile-edit",mode==="edit");
   document.querySelectorAll(".mobile-tab").forEach((b,i)=>b.classList.toggle("active",(mode==="edit"&&i===0)||(mode==="preview"&&i===1)));
-  if(mode==="preview") checkPageFit();
+  if(mode==="preview"){checkPageFit();setTimeout(fitMobileResume,50);}
 }
 function validateForm(){
   const missing=[];
@@ -312,6 +331,28 @@ function resetResume(){
   checkPageFit();
 }
 
+
+function fitMobileResume(){
+  if(window.innerWidth>1050) return;
+  const app=document.querySelector(".app");
+  const area=document.querySelector(".preview-area");
+  const resume=document.querySelector(".preview-area .resume");
+  if(!app || !area || !resume) return;
+  if(!app.classList.contains("mobile-preview")){
+    resume.style.transform="";
+    area.style.height="";
+    return;
+  }
+  const available=Math.max(280, window.innerWidth-28);
+  const naturalW=resume.offsetWidth;
+  const naturalH=resume.offsetHeight;
+  const scale=Math.min(1, available/naturalW);
+  resume.style.transform=`scale(${scale})`;
+  resume.style.transformOrigin="top center";
+  area.style.height=(naturalH*scale+12)+"px";
+}
+
+window.addEventListener("resize",fitMobileResume);
 </script>
 </body>
 </html>
